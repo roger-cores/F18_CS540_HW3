@@ -1,21 +1,24 @@
+#include <iostream>
+#include <utility>
+
 namespace cs540 {
   template<typename T>
   class RefCount {
     int count;
     T* s_ptr;
   public:
-    RefCount() : s_ptr(NULL), count(0) {}
+    RefCount() : s_ptr(nullptr), count(0) {}
     RefCount(T* p) : s_ptr(p), count(1) {}
     ~RefCount() {
       delete s_ptr;
     }
     RefCount* increment_count() {
-      if(s_ptr != NULL)
+      if(s_ptr != nullptr)
         ++count;
       return this;
     }
     RefCount* decrement_count() {
-      if(s_ptr != NULL && count != 0)
+      if(s_ptr != nullptr && count != 0)
         --count;
       if(count == 0) delete this;
       return this;
@@ -26,13 +29,13 @@ namespace cs540 {
     T* get() const {
       return s_ptr;
     }
-  }
+  };
+
   template<typename T>
   class SharedPtr {
-    RefCount* ref_count;
+    RefCount<T>* ref_count;
     template<typename U>
-    friend class SharedPtr<U>
-    friend class SharedPtr
+    friend class SharedPtr;
   public:
 
 // --------------------- Constructors, Assignment Operators and Destructors -------------------------
@@ -43,7 +46,7 @@ namespace cs540 {
 
     // Explicit Constructor to create a smart pointer that points to U*
     template<typename U>
-    explicit SharedPtr(U *ptr) : ref_count(ptr) {}
+    explicit SharedPtr(U *ptr) : ref_count(ptr) {};
 
     // Copy Constructor that copies from SharedPtr<T> to SharedPtr<T>
     SharedPtr(const SharedPtr &p) : ref_count(p.ref_count->increment_count()) {}
@@ -76,11 +79,11 @@ namespace cs540 {
     }
 
     // Copy assignment using move semantics from SharedPtr<T> to SharedPtr<U>
-    SharedPtr &opeartor=(SharedPtr &&p) {
+    SharedPtr &operator=(SharedPtr &&p) {
       if(&p == this) return *this;
       ref_count->decrement_count();
       ref_count = std::move(p.ref_count);
-      p.ref_count = NULL;
+      p.ref_count = nullptr;
     }
 
     // Copy assignment using move semantics from SharedPtr<U> to SharedPtr<T>
@@ -88,12 +91,12 @@ namespace cs540 {
     SharedPtr &operator=(SharedPtr<U> &&p){
       ref_count->decrement_count();
       ref_count = std::move(p.ref_count);
-      p.ref_count = NULL;
+      p.ref_count = nullptr;
     }
 
     // Destructor
     ~SharedPtr() {
-      if(ref_count != NULL) {
+      if(ref_count != nullptr) {
         ref_count->decrement_count();
         if(ref_count->get_count() == 0) delete ref_count;
       }
@@ -103,39 +106,39 @@ namespace cs540 {
     // Decrement ref count of current obj and reset ptr to null
     void reset() {
       ref_count->decrement_count();
-      ref_count = NULL;
+      ref_count = nullptr;
     }
 
     // Replace the owned object with another pointer
     template<typename U>
     void reset(U *p) {
       ref_count->decrement_count();
-      ref_count = new RefCount(p);
+      ref_count = new RefCount<U>(p);
     }
 
     // ------------------------------- Observers  -------------------------------\
     // Returns a pointer to owned Object
     T *get() const {
-      if(ref_count != NULL) return ref_count->get();
-      else return NULL;
+      if(ref_count != nullptr) return ref_count->get();
+      else return nullptr;
     }
 
     // Returns a reference to the owned object
-    T &opearator*() const {
+    T &operator*() const {
       return *(ref_count->get());
     }
 
     // Returns a pointer to owned Object
     T *operator->() const {
-      if(ref_count != NULL) return ref_count->get();
-      return NULL;
+      if(ref_count != nullptr) return ref_count->get();
+      return nullptr;
     }
 
     // Returns true if the SharedPtr is not null
     explicit operator bool() const {
-      if(ref_count != NULL && ref_count->get() != NULL) return true;
+      if(ref_count != nullptr && ref_count->get() != nullptr) return true;
       else return false;
-    }
+    };
 
   };
 
@@ -144,7 +147,7 @@ namespace cs540 {
   // Compare two RefCounts with different (or same) template params
   // Necessary for == between SharedPtrS
   template<typename T1, typename T2>
-  bool opearator==(const RefCount<T1> &r1, const RefCount<T2> &r2) {
+  bool operator==(const RefCount<T1> &r1, const RefCount<T2> &r2) {
     return r1.s_ptr == r2.s_ptr;
   }
 
@@ -156,29 +159,29 @@ namespace cs540 {
 
   // Next four functions are for comparisons with nullptr
   template<typename T>
-  bool opearator==(const RefCount<T> &r, std::nullptr_t) {
-    return r1.s_ptr == NULL;
+  bool operator==(const RefCount<T> &r, std::nullptr_t) {
+    return r.s_ptr == nullptr;
   }
 
   template<typename T>
-  bool opearator==(std::nullptr_t, const RefCount<T> &r) {
-    return r1.s_ptr == NULL;
+  bool operator==(std::nullptr_t, const RefCount<T> &r) {
+    return r.s_ptr == nullptr;
   }
 
   template<typename T>
-  bool opearator==(const SharedPtr<T> &p, std::nullptr_t) {
-    return p.ref_count == NULL;
+  bool operator==(const SharedPtr<T> &p, std::nullptr_t) {
+    return p.ref_count == nullptr;
   }
 
   template<typename T>
-  bool opearator==(std::nullptr_t, const SharedPtr<T> &p) {
-    return p.ref_count == NULL;
+  bool operator==(std::nullptr_t, const SharedPtr<T> &p) {
+    return p.ref_count == nullptr;
   }
 
   // Compare two RefCounts with different (or same) template params for inequality
   // Necessary for != between SharedPtrS
   template<typename T1, typename T2>
-  bool opearator!=(const RefCount<T1> &r1, const RefCount<T2> &r2) {
+  bool operator!=(const RefCount<T1> &r1, const RefCount<T2> &r2) {
     return r1.s_ptr != r2.s_ptr;
   }
 
@@ -190,25 +193,25 @@ namespace cs540 {
 
   // Next four functions are for inquality check with nullptr
   template<typename T>
-  bool opearator!=(const RefCount<T> &r, std::nullptr_t) {
-    return r1.s_ptr != NULL;
+  bool operator!=(const RefCount<T> &r, std::nullptr_t) {
+    return r.s_ptr != nullptr;
   }
 
   template<typename T>
-  bool opearator!=(std::nullptr_t, const RefCount<T> &r) {
-    return r1.s_ptr != NULL;
+  bool operator!=(std::nullptr_t, const RefCount<T> &r) {
+    return r.s_ptr != nullptr;
   }
 
   template<typename T>
-  bool opearator!=(const SharedPtr<T> &p, std::nullptr_t) {
-    return p.ref_count != NULL;
+  bool operator!=(const SharedPtr<T> &p, std::nullptr_t) {
+    return p.ref_count != nullptr;
   }
 
   template<typename T>
-  bool opearator!=(std::nullptr_t, const SharedPtr<T> &p) {
-    return p.ref_count != NULL;
+  bool operator!=(std::nullptr_t, const SharedPtr<T> &p) {
+    return p.ref_count != nullptr;
   }
-  
+
   // Static pointer cast from SharedPtr of type U to T
   template <typename T, typename U>
   SharedPtr<T> static_pointer_cast(const SharedPtr<U> &sp) {
