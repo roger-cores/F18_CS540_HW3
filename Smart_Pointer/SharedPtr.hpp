@@ -208,28 +208,22 @@ namespace cs540 {
   bool opearator!=(std::nullptr_t, const SharedPtr<T> &p) {
     return p.ref_count != NULL;
   }
-
-  // Static pointer cast from RefCount of type U to T
-  template <typename T, typename U>
-  RefCount<T> static_pointer_cast(const RefCount<U> &sp) {
-    return RefCount<T>(static_cast<T*>(sp.get()));
-  }
-
+  
   // Static pointer cast from SharedPtr of type U to T
   template <typename T, typename U>
   SharedPtr<T> static_pointer_cast(const SharedPtr<U> &sp) {
-    return SharedPtr<T>(static_cast<T*>(sp.ref_count));
+    return SharedPtr<T>(static_cast<T*>(sp.get()));
   }
 
   // Dynamic cast
   template <typename T, typename U>
-  RefCount<T> dynamic_pointer_cast(const RefCount<U> &sp) {
-    // TODO
-  }
-
-  template <typename T, typename U>
   SharedPtr<T> dynamic_pointer_cast(const SharedPtr<U> &sp) {
-    // TODO
+    SharedPtr<T> sp1 = SharedPtr<T>();
+    auto p = dynamic_cast<T*>(sp.get());
+    if(p) {
+      sp1.reset(p);
+    }
+    return sp1;
   }
 
 }
