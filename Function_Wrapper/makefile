@@ -1,15 +1,14 @@
-CPPFLAGS= -Wall -Wextra -pedantic -g
+CPPFLAGS= -std=c++14 -g
 
 all:
-	# Insert command to compile the code and generate executable
-	g++ -std=c++14 $(CPPFLAGS) Function.hpp
-	g++ -std=c++14 $(CPPFLAGS) Function_test.cpp -o function_test
+	g++ $(CPPFLAGS) Function.hpp
+	g++ $(CPPFLAGS) Function_test.cpp -o func
 run:
 	# Insert command to run the executable
-	./function_test
+	./func
 checkmem:
 	# Insert command to run the executable with valgrind
-	valgrind --tool=memcheck --leak-check=full ./function_test
+	valgrind --tool=memcheck --leak-check=full ./func
 clean:
 	# Insert command to clean object files, executables
-	rm function_test Function.hpp.gch
+	rm func *.gch
