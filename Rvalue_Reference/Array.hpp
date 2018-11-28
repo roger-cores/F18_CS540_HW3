@@ -2,6 +2,7 @@
 #define CS540_ARRAY
 
 #include <iostream>
+#include <chrono>
 #include "MyInt.hpp"
 
 namespace cs540 {
@@ -10,6 +11,12 @@ namespace cs540 {
 
   public:
     int count;
+
+    ~Array() {
+      delete[] data;
+      data = nullptr;
+    }
+
     Array() : data(nullptr), count(0) {}
 
     Array(std::initializer_list<MyInt> list) {
@@ -30,9 +37,11 @@ namespace cs540 {
       }
     }
 
-    Array(const Array&& arr) {
+    Array(Array&& arr) {
       data = std::move(arr.data);
       count = std::move(arr.count);
+      arr.data = nullptr;
+      arr.count = 0;
     }
 
     Array& operator=(const Array &arr) {
@@ -64,6 +73,8 @@ namespace cs540 {
 
       data = std::move(arr.data);
       count = std::move(arr.count);
+      arr.data = nullptr;
+      arr.count = 0;
       return *this;
     }
 
@@ -71,6 +82,28 @@ namespace cs540 {
       return data[index];
     }
 
+    static void move_performance_test() {
+      using Milli = std::chrono::duration<double, std::ratio<1,1000>>;
+      using TimePoint = std::chrono::time_point<std::chrono::system_clock>;
+      using namespace std::chrono;
+      TimePoint start, end;
+      Array arr1{};
+      Array arr2{};
+      int max_elems = 10000000;
+      arr1.data = new MyInt[max_elems];
+      arr2.data = new MyInt[max_elems];
+      for(int i=0; i<max_elems; i++){
+        arr1.data[i] = i;
+        arr2.data[i] = i;
+      }
+
+      start = system_clock::now();
+      Array copied_arr1{arr1};
+      end = system_clock::now();
+      Milli copy_time = end - start;
+
+      std::cout << "Copy Constr took " << copy_time.count() << " ms" << std::endl;
+    }
   };
 
   std::ostream& operator<<(std::ostream &os, const Array &arr) {
