@@ -84,25 +84,44 @@ namespace cs540 {
 
     static void move_performance_test() {
       using Milli = std::chrono::duration<double, std::ratio<1,1000>>;
-      using TimePoint = std::chrono::time_point<std::chrono::system_clock>;
+      using TimeStamp = std::chrono::time_point<std::chrono::system_clock>;
       using namespace std::chrono;
-      TimePoint start, end;
+      TimeStamp start, end;
+      Milli elapsed;
       Array arr1{};
-      Array arr2{};
       int max_elems = 10000000;
       arr1.data = new MyInt[max_elems];
-      arr2.data = new MyInt[max_elems];
       for(int i=0; i<max_elems; i++){
         arr1.data[i] = i;
-        arr2.data[i] = i;
       }
 
       start = system_clock::now();
       Array copied_arr1{arr1};
       end = system_clock::now();
-      Milli copy_time = end - start;
+      elapsed = end - start;
 
-      std::cout << "Copy Constr took " << copy_time.count() << " ms" << std::endl;
+      std::cout << "Copy Constr took " << elapsed.count() << " ms" << std::endl;
+
+      start = system_clock::now();
+      Array moved_arr1{std::move(arr1)};
+      end = system_clock::now();
+      elapsed = end - start;
+
+      std::cout << "Move Constr took " << elapsed.count() << " ms" << std::endl;
+
+      start = system_clock::now();
+      Array assigned_arr1  = arr1;
+      end = system_clock::now();
+      elapsed = end - start;
+
+      std::cout << "Assignment took " << elapsed.count() << " ms" << std::endl;
+
+      start = system_clock::now();
+      Array move_assigned_arr1  = std::move(arr1);
+      end = system_clock::now();
+      elapsed = end - start;
+
+      std::cout << "Move Assignment took " << elapsed.count() << " ms" << std::endl;
     }
   };
 
