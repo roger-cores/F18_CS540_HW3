@@ -2,7 +2,6 @@
 #include "Array.hpp"
 #include <iostream>
 #include <utility>
-#include "Array.hpp"
 #include <assert.h>
 
 int main() {
