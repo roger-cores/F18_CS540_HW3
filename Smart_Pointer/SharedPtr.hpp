@@ -70,7 +70,7 @@ namespace cs540 {
 
     // Explicit Constructor to create a smart pointer that points to U*
     template<typename U>
-    SharedPtr(U *ptr) : s_ptr{ptr}, ref_count{new RefCount<U>(ptr)} {};
+    SharedPtr(U *ptr) : s_ptr{ptr}, ref_count{new RefCount<U>(ptr)} {}
 
     // Copy Constructor that copies from SharedPtr<T> to SharedPtr<T>
     SharedPtr(const SharedPtr &p) : s_ptr{p.s_ptr}, ref_count{p.ref_count} {
@@ -166,7 +166,7 @@ namespace cs540 {
       s_ptr = p;
     }
 
-    // ------------------------------- Observers  -------------------------------\
+    // ------------------------------- Observers  -------------------------------
     // Returns a pointer to owned Object
     T *get() const {
       return s_ptr;

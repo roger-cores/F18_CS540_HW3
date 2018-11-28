@@ -1,4 +1,4 @@
-CPPFLAGS= -Wall -Wextra -pedantic -g -pthread
+CPPFLAGS= -Wall -Wextra -pedantic -g -pthread -ldl
 
 all:
 	# Insert command to compile the code and generate executable
