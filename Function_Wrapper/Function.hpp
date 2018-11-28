@@ -85,7 +85,28 @@ namespace cs540 {
       if(callable != nullptr) return true;
       return false;
     }
+
+
   };
 
+  template<typename ResultType, typename... ArgumentTypes>
+  bool operator==(const Function<ResultType(ArgumentTypes...)> &fn, std::nullptr_t) {
+    return !f;
+  }
+
+  template<typename ResultType, typename... ArgumentTypes>
+  bool operator==(std::nullptr_t, const Function<ResultType(ArgumentTypes...)> &fn) {
+    return !f;
+  }
+
+  template <typename ResultType, typename... ArgumentTypes>
+  bool operator!=(const Function<ResultType(ArgumentTypes...)> &f, std::nullptr_t) {
+    return bool(f);
+  }
+
+  template <typename ResultType, typename... ArgumentTypes>
+  bool operator!=(std::nullptr_t, const Function<ResultType(ArgumentTypes...)> &f) {
+    return bool(f);
+  }
 
 }
