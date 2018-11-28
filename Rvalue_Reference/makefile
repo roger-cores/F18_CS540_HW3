@@ -11,6 +11,7 @@ run:
 
 checkmem:
 	# Insert command to run the executable with valgrind
-	valgrind --tool=memcheck --leak-check=full
+	valgrind --tool=memcheck --leak-check=full array_test
 clean:
 	# Insert command to clean object files, executables
+	rm array_test

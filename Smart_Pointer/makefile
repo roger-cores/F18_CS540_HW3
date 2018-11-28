@@ -2,8 +2,8 @@ CPPFLAGS= -Wall -Wextra -pedantic -g -pthread
 
 all:
 	# Insert command to compile the code and generate executable
-	g++ -g -std=c++14 SharedPtr.hpp
-	g++ -g -std=c++14 -pthread SharedPtr_test.cpp -o sharedptr
+	g++ -std=c++14 $(CPPFLAGS) SharedPtr.hpp
+	g++ -std=c++14 $(CPPFLAGS) SharedPtr_test.cpp -o sharedptr
 run:
 	# Insert command to run the executable
 	./sharedptr
