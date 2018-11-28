@@ -29,20 +29,48 @@ namespace cs540 {
   };
 
   template <typename ResultType, typename ... ArgumentTypes>
-  class Function<ResultType(ArgumentTypes ...)> {
+  class Function<ResultType(ArgumentTypes...)> {
+    CallableAbstract<ResultType(ArgumentTypes...)> *callable;
   public:
-    Function();
+    Function() callable(nullptr) {}
 
-    template <typename FunctionType> Function(FunctionType);
+    template <typename FunctionType> Function(FunctionType type) {
+      callable = new Callable<FunctionType, ResultType, ArgumentTypes...>(type);
+    }
 
-    Function(const Function&);
+    Function(const Function& fn) {
+      if(fn.callable != nullptr) {
+        callable = fn.callable->clone();
+      } else callable = nullptr;
+    }
 
-    Function &operator=(const Function&);
+    Function &operator=(const Function& fn) {
+      if(&fn == this) return *this; //self assignment
 
-    ~Function();
+      if(callable != nullptr) {
+        delete callable; //delete existing
+      }
+
+      if(fn.callable != nullptr) {
+        callable = fn.callable->clone();
+      } else {
+        callable = nullptr;
+      }
+
+      return *this;
+    }
+
+    ~Function() {
+      if(callable != nullptr) {
+        delete callable;
+        callable = nullptr;
+      }
+    }
 
     ResultType operator()(ArgumentTypes ...)
 
     explicit operator bool() const;
   };
+
+
 }
