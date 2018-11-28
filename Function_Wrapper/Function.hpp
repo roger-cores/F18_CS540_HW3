@@ -2,6 +2,13 @@
 
 namespace cs540 {
 
+  class BadFunctionCall : public std::exception {
+  public:
+    virtual const char* what() const throw() {
+      return "Function Call Was Invalid";
+    }
+  }
+
   template<typename ResultType, typename ... ArgumentTypes>
   class CallableAbstract<ResultType(ArgumentTypes...)> {
     virtual ~CallableAbstract() = default;
@@ -67,9 +74,17 @@ namespace cs540 {
       }
     }
 
-    ResultType operator()(ArgumentTypes ...)
+    ResultType operator()(ArgumentTypes ... args) {
+      if(callable == nullptr) {
+        throw BadFunctionCall();
+      }
+      return ((*callable_object)(std::forward<ArgumentTypes>(args)...));
+    }
 
-    explicit operator bool() const;
+    explicit operator bool() const {
+      if(callable != nullptr) return true;
+      return false;
+    }
   };
 
 
