@@ -1,8 +1,13 @@
-CPPFLAGS= -std=c++14 -g
+CPPFLAGS= -g -Wall -Wextra -pedantic -ldl -std=c++14
 
-all:
-	g++ $(CPPFLAGS) Function.hpp
-	g++ $(CPPFLAGS) Function_test.cpp -o func
+all: func
+
+func: func.o
+	g++ $(CPPFLAGS) func.o -o func
+
+func.o: Function.hpp Function_test.cpp
+	g++ $(CPPFLAGS) -c Function_test.cpp -o func.o
+
 run:
 	# Insert command to run the executable
 	./func
@@ -11,4 +16,4 @@ checkmem:
 	valgrind --tool=memcheck --leak-check=full ./func
 clean:
 	# Insert command to clean object files, executables
-	rm func *.gch
+	rm func *.o

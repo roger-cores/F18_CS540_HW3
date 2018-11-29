@@ -1,9 +1,13 @@
-CPPFLAGS= -Wall -Wextra -pedantic -g -pthread -ldl
+CPPFLAGS= -g -pedantic -std=c++14 -pthread
 
-all:
-	# Insert command to compile the code and generate executable
-	g++ -std=c++14 $(CPPFLAGS) SharedPtr.hpp
-	g++ -std=c++14 $(CPPFLAGS) SharedPtr_test.cpp -o sharedptr
+all: sharedptr
+
+sharedptr: sharedptr.o
+	g++ $(CPPFLAGS) sharedptr.o -o sharedptr
+
+sharedptr.o: SharedPtr.hpp SharedPtr_test.cpp
+	g++ $(CPPFLAGS) -c SharedPtr_test.cpp -o sharedptr.o
+
 run:
 	# Insert command to run the executable
 	./sharedptr
@@ -12,4 +16,4 @@ checkmem:
 	valgrind --tool=memcheck --leak-check=full ./sharedptr
 clean:
 	# Insert command to clean object files, executables
-	rm sharedptr SharedPtr.hpp.gch
+	rm sharedptr *.o
